@@ -2,7 +2,9 @@
 #define AVL_TREE_H
 
 #include "dsexceptions.h"
+#include <cmath>
 #include <algorithm>
+#include <vector>
 #include <iostream> 
 using namespace std;
 
@@ -147,22 +149,22 @@ class AvlTree
     }
 
     int countNumberNodesPublic(){
-        countNumberNodesPrivate(root);
+        return countNumberNodesPrivate(root);
     }
-
-
 
     Comparable findPublicFunction(const Comparable &x){
         return findPrivateFunction(x, root);
     }
 
-    int averageDepthPublic(){
+
+    float averageDepthPublic(){
         averageDepthPrivate(root);
     }
 
-    int sumOfHeightsPublic(){
-        sumOfHeightsPrivate(root);
+    float depthTransversalPublic(const Comparable &x){
+        depthTransversalPrivate(root);
     }
+
 
 
   //private:
@@ -461,10 +463,6 @@ class AvlTree
         return countNumberNodesPrivate(t->left) + countNumberNodesPrivate(t->right) + rootNodeCounter;
     }
 
-    int averageDepthPrivate(AvlNode *& t){
-        int numberOfNodes = countNumberNodesPublic(root);
-
-    }
 
     int sumOfHeights(AvlNode *& t){
         int rootNodeCounter = height(t);
@@ -479,6 +477,32 @@ class AvlTree
         
         return sumOfHeights(t->left) + sumOfHeights(t->right) + rootNodeCounter;
     }
+
+    float nodeDepthPrivate(AvlNode *& x, AvlNode *& t){
+        if( t == nullptr )
+            return 0;
+        else if(t == x)
+            return 0; 
+
+        if( x->element < t->element )
+            return nodeDepthPrivate( x, t->left ) + 1;
+        if( t->element < x->element )
+            return nodeDepthPrivate( x, t->right ) + 1;
+          // Match
+    }
+
+    float depthTransversalPrivate(AvlNode *& t){
+        if(t == nullptr){
+            return 0;
+        }
+        return depthTransversalPrivate(t->left) + depthTransversalPrivate(t->right) + nodeDepthPrivate(t, root); 
+    }
+
+    float averageDepthPrivate(AvlNode *& t){
+        float averageDepth = depthTransversalPrivate(t) / countNumberNodesPrivate(t);
+        return averageDepth;
+    }
+
 
 };
 
