@@ -28,6 +28,7 @@ template <typename Comparable>
 class AvlTree
 {
   public:
+    int q = 0;
     AvlTree( ) : root{ nullptr }
       { }
     
@@ -143,9 +144,9 @@ class AvlTree
     /**
      * Remove x from the tree. Nothing is done if x is not found.
      */
-    void remove( const Comparable & x )
+    void remove( const Comparable & x, float &removeCounter)
     {
-        remove( x, root );
+        remove( x, root, removeCounter);
     }
 
     int countNumberNodesPublic(){
@@ -156,18 +157,26 @@ class AvlTree
         return findPrivateFunction(x, root);
     }
 
+    float findPublicFunctionForRecurrences(const Comparable &x, float &recurrenceCounter, float &query){
+        return findPrivateFunctionForRecurrences(x, root, recurrenceCounter, query);
+    }
+
 
     float averageDepthPublic(){
-        averageDepthPrivate(root);
+        return averageDepthPrivate(root);
     }
 
     float depthTransversalPublic(const Comparable &x){
-        depthTransversalPrivate(root);
+        return depthTransversalPrivate(root);
+    }
+
+    int getFoundQueriesPublic(){
+        return getFoundQueriesPrivate(q);
     }
 
 
 
-  //private:
+  private:
     struct AvlNode
     {
         Comparable element;
@@ -230,25 +239,28 @@ class AvlTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void remove( const Comparable & x, AvlNode * & t )
+    void remove( const Comparable & x, AvlNode * & t, float &removeCounter)
     {
+        
         if( t == nullptr )
             return;   // Item not found; do nothing
         
         if( x < t->element )
-            remove( x, t->left );
+            remove( x, t->left, removeCounter );
         else if( t->element < x )
-            remove( x, t->right );
+            remove( x, t->right, removeCounter );
         else if( t->left != nullptr && t->right != nullptr ) // Two children
         {
             t->element = findMin( t->right )->element;
-            remove( t->element, t->right );
+            remove( t->element, t->right, removeCounter );
         }
         else
         {
+            ++removeCounter;
             AvlNode *oldNode = t;
             t = ( t->left != nullptr ) ? t->left : t->right;
             delete oldNode;
+            //cout << "This is number of successfuly remove calls: " << removeCounter << endl;
         }
         
         balance( t );
@@ -440,13 +452,19 @@ class AvlTree
     }
 
     Comparable findPrivateFunction(const Comparable &x, AvlNode * & t){
+
         if( t == nullptr )
             return Comparable("", "not found");
         else if( x < t->element )
-            return findPrivateFunction( x, t->left );
+            return findPrivateFunction( x, t->left);
         else if( t->element < x )
-            return findPrivateFunction( x, t->right );
+            return findPrivateFunction( x, t->right);
         else
+            //cout << "This is number of recursive calls: " << c << endl;
+            //++query;
+            //getFoundQueriesPrivate(query);
+            //cout << "Number of queries: " << query << endl;
+
             return t->element;    // Match
     }
 
@@ -503,7 +521,45 @@ class AvlTree
         return averageDepth;
     }
 
+    int getFoundQueriesPrivate(int q){
+        vector<int> successfulQueriesFound;
+        successfulQueriesFound.push_back(q);
+        int totalQueries = 0;
 
+        for(int i = 0; i < successfulQueriesFound.size(); i++){
+            cout << successfulQueriesFound[i] << endl;
+            totalQueries += successfulQueriesFound[i];
+        }
+
+        return totalQueries;
+    }
+
+    float findPrivateFunctionForRecurrences(const Comparable &x, AvlNode * & t, float &recurrenceCounter, float &query){
+        ++recurrenceCounter;
+        
+
+        if( t == nullptr )
+            //return Comparable("", "not found");
+            return 0.0;
+        else if( x < t->element )
+            return findPrivateFunctionForRecurrences( x, t->left, recurrenceCounter, query);
+        else if( t->element < x )
+            return findPrivateFunctionForRecurrences( x, t->right, recurrenceCounter, query);
+        else
+            //cout << "This is number of recursive calls: " << recurrenceCounter << endl;
+            ++query;
+            /*
+            successfulQueryVector.push_back(query);
+            
+            for(int i = 0; i < successfulQueryVector.size(); i++){
+                result += successfulQueryVector[i];
+            }
+            */
+            //getFoundQueriesPrivate(query);
+            //cout << "Number of queries: " << query << endl;
+            //cout << "This is number of queries: " << query << endl;
+            return query;   // Match
+    }
 };
 
 #endif
