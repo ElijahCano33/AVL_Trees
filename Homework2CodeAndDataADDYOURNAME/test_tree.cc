@@ -27,12 +27,15 @@ void TestTree(const string &db_filename, const string &seq_filename, TreeType &a
   string newDb_line = "";
   string db_line;
   ifstream inFile;
+  ifstream inFile2;
   inFile.open(db_filename);
 
   while(x < 10){
     getline(inFile, fileJunk, '\n');
     x++;
   }
+
+ 
 
   while(getline(inFile, db_line, '\n')){
     newDb_line = db_line.substr(0, db_line.length()-2);
@@ -45,11 +48,42 @@ void TestTree(const string &db_filename, const string &seq_filename, TreeType &a
     }
   }
 
+
   cout  << a_tree.countNumberNodesPublic() << endl;
 
   cout << a_tree.averageDepthPublic() << endl;
 
   cout << a_tree.averageDepthPublic()/log2(a_tree.countNumberNodesPublic()) << endl;
+
+
+  inFile2.open(seq_filename);
+  float counter = 0.0;
+  float query = 0.0;
+  string sInInputFile = "";
+
+  while(getline(inFile2, sInInputFile, '\n')){
+    SequenceMap newMap(sInInputFile, "");
+    a_tree.findPublicFunctionForRecurrences(newMap, counter, query);
+  }
+
+  cout << query << endl;
+  float averageFindRecurrences = counter / query;
+  cout << averageFindRecurrences << endl;
+
+  inFile2.open(seq_filename);
+  float rc = 0.0;
+  string sInInputFile2 = "";
+  while(getline(inFile2, sInInputFile2, '\n')){
+      SequenceMap newMap(sInInputFile2, "");
+      a_tree.remove(newMap, rc);
+    }
+
+
+  cout << rc << endl;
+  cout  << a_tree.countNumberNodesPublic() << endl;
+  cout << a_tree.averageDepthPublic() << endl;
+  cout << a_tree.averageDepthPublic()/log2(a_tree.countNumberNodesPublic()) << endl;
+
 }
 
 }  // namespace
