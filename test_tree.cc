@@ -1,9 +1,3 @@
-/*
-Author: Elijah Cano
-Course: CSCI 335
-Assignment: Homework 2
-*/
-
 #include "avl_tree.h"
 #include "SequenceMap.hpp"
 
