@@ -1,9 +1,3 @@
-/*
-Author: Elijah Cano
-Course: CSCI 335
-Assignment: Homework 2
-*/
-
 #ifndef AVL_TREE_H
 #define AVL_TREE_H
 
